@@ -53,6 +53,8 @@ if (isServer || !hasInterface) then
 		if (SPLITAI == 1) then {SPLITAION = true}else{SPLITAION = false};
 		publicVariable "SPLITAION";
 		
+		publicVariable "LogLevel";
+		
 		if ((!HEADLESSON) && (SPLITAION)) exitwith {["SCRIPT STOPPED HEADLESS PARAM OFF", 1] spawn debug_log;};
 		
 	//--- run on Headless if headless on	
