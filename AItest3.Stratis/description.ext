@@ -1,0 +1,82 @@
+enableSaving = [false, false];
+onLoadName = "AI SERVER TEST";
+joinUnassigned = false;
+
+class Params
+{
+	class CREATETIME
+	{
+		title = "EACH UNIT CREATE TIME";
+		values[] = {200,100,50,10,5,1};
+		texts[] = {"2","1","0.5","0.1","0.05","0.01"};
+		default = 5;
+	};
+	
+	class ENABLEFPSLIMIT
+	{
+		title = "ENABLE FPS LIMITER on SERVER";
+		values[] = {1,0};
+		texts[] = {"Enabled","Disabled"};
+		default = 1;
+	};
+	
+	class FPSLIMIT
+	{
+		title = "FPS LIMIT on SERVER";
+		values[] = {45,40,35,30,25};
+		texts[] = {"45","40","35","30","25"};
+		default = 45;
+	};
+	
+	class BATCHTIME
+	{
+		title = "BATCH WAIT TIME (half if FPS Limit is on)";
+		values[] = {15,30,60,90,120,150,180,210,240,270,300};
+		texts[] = {"15s","30s","1m","1m30s","2m","2m30s","3m","3m30s","4m","4m30s","5m"};
+		default = 15;
+	};
+	
+	class AIPERBATCH
+	{
+		title = "AI CREATED PER BATCH";
+		values[] = {5,10,15,20,25,30,35,40,45,50};
+		texts[] = {5,10,15,20,25,30,35,40,45,50};
+		default = 25;
+	};
+	
+	class TOTALAI
+	{
+		title = "MAX AI CREATED";
+		values[] = {50,100,150,200,250,300,350,400,450,500,600,700,800,900,1000};
+		texts[] = {50,100,150,200,250,300,350,400,450,500,600,700,800,900,1000};
+		default = 500;
+	};
+	
+	class HEADLESS
+	{
+		title = "ENABLE HEADLESS MODE";
+		values[] = {1,0};
+		texts[] = {"Enabled","Disabled"};
+		default = 0;
+	};
+	
+	class SPLITAI
+	{
+		title = "ENABLE SPLITTING AI BETWEEN HEDALESS AND SERVER";
+		values[] = {1,0};
+		texts[] = {"Enabled","Disabled"};
+		default = 0;
+	};
+	
+};
+
+class CfgDebriefing {
+
+	class End6 {
+		title = "WARNING";
+		subtitle = "";
+		description = "You Need Headless on if you have Split on";
+		pictureBackground = "";
+	};
+};
+
