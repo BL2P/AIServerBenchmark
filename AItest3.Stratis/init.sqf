@@ -1,5 +1,4 @@
-_functions = [] execVM "functions.sqf"; 
-waitUntil {scriptDone _functions};
+
 if (isServer || !hasInterface) then 
 {	
 	// run fps smoothing loop
@@ -23,7 +22,10 @@ if (isServer || !hasInterface) then
 				missionNamespace setVariable [_paramName, _value];
 			};
 		sleep 1;
-		
+
+		_functions = [] execVM "functions.sqf"; 
+		waitUntil {scriptDone _functions};
+	
 		//--- check if headless param is on or off
 		if (HEADLESS == 1) then {HEADLESSON = true} else {HEADLESSON = false};
 		publicVariable "HEADLESSON";
@@ -230,5 +232,4 @@ if (isServer || !hasInterface) then
 			};
 		};
 	};
-} else {["I am not the server OR the Headless", 1] spawn debug_log;};
-["END OF SCRIPT", 1] spawn debug_log;
+};
