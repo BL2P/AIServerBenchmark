@@ -1,8 +1,9 @@
-call compile preprocessFileLineNumbers "functions.sqf";
+_functions = [] execVM "functions.sqf"; 
+waitUntil {scriptDone _functions};
 if (isServer || !hasInterface) then 
 {	
 	// run fps smoothing loop
-	[] spawn fps_avg_loop; 
+	//[] spawn fps_avg_loop; 
 	//--- set the servers view distance and stuff
 	setViewDistance 2000;
 	setObjectViewDistance 2000;
@@ -63,13 +64,13 @@ if (isServer || !hasInterface) then
 					_i = 0;
 					_grp = createGroup west;
 					sleep (BATCHTIME / 2);
-					[format["** Fps = %1 ::: FpsMin = %2 ::: time = %3 ::: _aicount = %4", round fps_avg,round diag_fpsmin,round time,_aicount], 2] spawn debug_log;
+					[format["** Fps = %1 ::: FpsMin = %2 ::: time = %3 ::: _aicount = %4", round diag_fps,round diag_fpsmin,round time,_aicount], 2] spawn debug_log;
 					sleep (BATCHTIME / 2);
 				};
 				if (_aicount >= TOTALAI) exitwith {
 				[format["======== AI CREATION STOPPED @ %1 AI ========", _aicount], 1] spawn debug_log;
 					while {true} do {
-						[format["---- fps = %1 ::: fpsmin = %2 ::: loop %3sec ::: _aicount = %4", round fps_avg,round diag_fpsmin,(BATCHTIME / 2),_aicount], 2] spawn debug_log;
+						[format["---- fps = %1 ::: fpsmin = %2 ::: loop %3sec ::: _aicount = %4", round diag_fps,round diag_fpsmin,(BATCHTIME / 2),_aicount], 2] spawn debug_log;
 						sleep (BATCHTIME / 2);
 					};
 				};
@@ -105,9 +106,9 @@ if (isServer || !hasInterface) then
 					_i = 0;
 					_grp = createGroup west;
 					sleep (BATCHTIME / 2);
-					[format["** Fps = %1 ::: FpsMin = %2 ::: time = %3 ::: _aicount = %4", round fps_avg,round diag_fpsmin,round time,_aicount], 2] spawn debug_log;
+					[format["** Fps = %1 ::: FpsMin = %2 ::: time = %3 ::: _aicount = %4", round diag_fps,round diag_fpsmin,round time,_aicount], 2] spawn debug_log;
 					if (ENABLEFPSLIMIT > 0) then {
-							waituntil {sleep 0.5; fps_avg > FPSLIMIT};
+							waituntil {sleep 0.5; diag_fps > FPSLIMIT};
 						} else {
 							sleep (BATCHTIME / 2);
 						};
@@ -115,7 +116,7 @@ if (isServer || !hasInterface) then
 				if (_aicount >= TOTALAI) exitwith {
 					[format["======== AI CREATION STOPPED @ %1 AI ========", _aicount], 1] spawn debug_log;
 					while {true} do {
-						[format["---- fps = %1 ::: fpsmin = %2 ::: loop %3sec ::: _aicount = %4", round fps_avg,round diag_fpsmin,(BATCHTIME / 2),_aicount], 2] spawn debug_log;
+						[format["---- fps = %1 ::: fpsmin = %2 ::: loop %3sec ::: _aicount = %4", round diag_fps,round diag_fpsmin,(BATCHTIME / 2),_aicount], 2] spawn debug_log;
 						sleep (BATCHTIME / 2);
 					};
 				};
@@ -153,10 +154,10 @@ if (isServer || !hasInterface) then
 						_i = 0;
 						_grp = createGroup west;
 						if (ENABLEFPSLIMIT > 0) then {sleep (BATCHTIME);}else{sleep (BATCHTIME / 2);};
-						[format["** Fps = %1 ::: FpsMin = %2 ::: time = %3 ::: _aicount = %4", round fps_avg,round diag_fpsmin,round time,_aicount], 2] spawn debug_log;
+						[format["** Fps = %1 ::: FpsMin = %2 ::: time = %3 ::: _aicount = %4", round diag_fps,round diag_fpsmin,round time,_aicount], 2] spawn debug_log;
 						if (ENABLEFPSLIMIT > 0) then 
 							{
-								if (fps_avg < FPSLIMIT) exitwith {
+								if (diag_fps < FPSLIMIT) exitwith {
 								["HEADLESS FPS LIMIT REACHED SWAPPING CREATION EXIT 1", 1] spawn debug_log;
 								RUNONSERVER = true; 
 								publicVariable "RUNONSERVER";
@@ -168,7 +169,7 @@ if (isServer || !hasInterface) then
 					[format["======== AI CREATION STOPPED @ %1 AI ========", _aicount], 1] spawn debug_log;
 					RUNONSERVER = true; publicVariable "RUNONSERVER";
 						while {true} do {
-							[format["---- HCfps = %1 ::: HCfpsmin = %2 ::: loop %3sec ::: _aicount = %4", round fps_avg,round diag_fpsmin,(BATCHTIME / 2),_aicount], 2] spawn debug_log;
+							[format["---- HCfps = %1 ::: HCfpsmin = %2 ::: loop %3sec ::: _aicount = %4", round diag_fps,round diag_fpsmin,(BATCHTIME / 2),_aicount], 2] spawn debug_log;
 							sleep (BATCHTIME / 2);
 						};
 					};
@@ -206,10 +207,10 @@ if (isServer || !hasInterface) then
 						_i = 0;
 						_grp = createGroup west;
 						if (ENABLEFPSLIMIT > 0) then {sleep (BATCHTIME);}else{sleep (BATCHTIME / 2);};
-						[format["** Fps = %1 ::: FpsMin = %2 ::: time = %3 ::: _aicount = %4", round fps_avg,round diag_fpsmin,round time,_aicount], 2] spawn debug_log;
+						[format["** Fps = %1 ::: FpsMin = %2 ::: time = %3 ::: _aicount = %4", round diag_fps,round diag_fpsmin,round time,_aicount], 2] spawn debug_log;
 						if (ENABLEFPSLIMIT > 0) then 
 							{
-								if (fps_avg < FPSLIMIT) exitwith {
+								if (diag_fps < FPSLIMIT) exitwith {
 								["SERVER FPS LIMIT REACHED EXIT 1", 1] spawn debug_log;
 								EXITSERVER = true;
 								publicVariable "EXITSERVER";
@@ -221,7 +222,7 @@ if (isServer || !hasInterface) then
 					if (_aicount >= TOTALAI / 2) exitwith {
 					[format["======== AI CREATION STOPPED @ %1 AI ========", _aicount], 1] spawn debug_log;
 						while {true} do {
-							[format["---- SRVfps = %1 ::: SRVfpsmin = %2 ::: loop %3sec ::: _aicount = %4", round fps_avg,round diag_fpsmin,(BATCHTIME / 2),_aicount], 2] spawn debug_log;
+							[format["---- SRVfps = %1 ::: SRVfpsmin = %2 ::: loop %3sec ::: _aicount = %4", round diag_fps,round diag_fpsmin,(BATCHTIME / 2),_aicount], 2] spawn debug_log;
 							sleep (BATCHTIME / 2);
 						};
 					};
