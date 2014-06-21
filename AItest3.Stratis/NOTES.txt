@@ -2,3 +2,6 @@ With the introduction of the functions file and the while loop for the FPS_AVG t
 this is now a bad benchmark we need to remove that while loop and remove the functions file and keep this as simple as posible.
 
 when i run the test now the cps is far too high compared to the previous version.
+
+
+No while loops when the mission is creating at all !!!!
