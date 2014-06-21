@@ -1,3 +1,28 @@
+debug_log = {
+	/* 	=== SCRIPT BY FLUIT ===
+		Use a log level for writing to the RPT
+		Released: 2014-06-21
+		Version 1.0
+		Usage example:
+			LogLevel = 2; publicVariable "LogLevel";
+			[format["Testing %1", "level 1"], 1] spawn debug_log;
+	*/
+	private ["_message", "_level"];
+	_message = "";
+	_level = 0;
+	if (typeName _this == "ARRAY") then
+	{
+		_message = _this select 0;
+		if (count _this > 1) then {_level = _this select 1};
+	};
+	if (typeName _this == "STRING") then
+	{
+		_message = _this;
+	};
+	if (isNil "LogLevel") then { LogLevel = 0; publicVariable "LogLevel"; };
+	if (LogLevel >= _level) then { diag_log _message; };
+};
+
 if (isServer || !hasInterface) then 
 {
 	//--- set the servers view distance and stuff
@@ -28,7 +53,7 @@ if (isServer || !hasInterface) then
 		if (SPLITAI == 1) then {SPLITAION = true}else{SPLITAION = false};
 		publicVariable "SPLITAION";
 		
-		if ((!HEADLESSON) && (SPLITAION)) exitwith {diag_log "SCRIPT STOPPED HEADLESS PARAM OFF";};
+		if ((!HEADLESSON) && (SPLITAION)) exitwith {["SCRIPT STOPPED HEADLESS PARAM OFF", 1] spawn debug_log;};
 		
 	//--- run on Headless if headless on	
 	if (HEADLESSON && !isServer && !hasinterface && !SPLITAION) then {
@@ -37,16 +62,16 @@ if (isServer || !hasInterface) then
 			_i = 0;
 			_aicount = 0;
 			_timer = CREATETIME / 100;
-			diag_log "===========AI HEADLESS TEST SETTINGS===========";
-			diag_log "**** FPS LIMIT OFF"; //--- always off with headless todo: alow for seperate recorrding of HCFPS and SERVERFPS
-			if (SPLITAI > 0) then {diag_log "**** SPLITAI ON";}else{diag_log "**** SPLITAI OFF";};
-			diag_log format ["**** HEADLESSON = %1",HEADLESSON];
-			diag_log format ["**** FPSLIMIT = %1",FPSLIMIT];
-			diag_log format ["**** TIME PER UNIT = %1",_timer];
-			diag_log format ["**** AI PER BATCH = %1",AIPERBATCH];
-			if (ENABLEFPSLIMIT > 0) then {diag_log format ["**** BATCH   TIME = %1",(BATCHTIME / 2)];}else{diag_log format ["**** BATCH   TIME = %1",BATCHTIME];};
-			diag_log format ["**** MAX TOTAL AI = %1",TOTALAI];
-			diag_log "=============================================";
+			["===========AI HEADLESS TEST SETTINGS===========", 1] spawn debug_log;
+			["**** FPS LIMIT OFF", 1] spawn debug_log; //--- always off with headless todo: alow for seperate recorrding of HCFPS and SERVERFPS
+			if (SPLITAI > 0) then {["**** SPLITAI ON", 1] spawn debug_log;}else{["**** SPLITAI OFF", 1] spawn debug_log;};
+			[format["**** HEADLESSON = %1", HEADLESSON], 1] spawn debug_log;
+			[format["**** FPSLIMIT = %1", FPSLIMIT], 1] spawn debug_log;
+			[format["**** TIME PER UNIT = %1", _timer], 1] spawn debug_log;
+			[format["**** AI PER BATCH = %1", AIPERBATCH], 1] spawn debug_log;
+			if (ENABLEFPSLIMIT > 0) then {[format["**** BATCH   TIME = %1", (BATCHTIME / 2)], 1] spawn debug_log;}else{[format["**** BATCH   TIME = %1", BATCHTIME], 1] spawn debug_log;};
+			[format["**** MAX TOTAL AI = %1", TOTALAI], 1] spawn debug_log;
+			["=============================================", 1] spawn debug_log;
 			_grp = createGroup west;
 			while {true} do {
 				sleep _timer;
@@ -58,13 +83,13 @@ if (isServer || !hasInterface) then
 					_i = 0;
 					_grp = createGroup west;
 					sleep (BATCHTIME / 2);
-					diag_log format ["** Fps = %1 ::: FpsMin = %2 ::: time = %3 ::: _aicount = %4",round diag_fps,round diag_fpsmin,round time,_aicount];
+					[format["** Fps = %1 ::: FpsMin = %2 ::: time = %3 ::: _aicount = %4", round diag_fps,round diag_fpsmin,round time,_aicount], 2] spawn debug_log;
 					sleep (BATCHTIME / 2);
 				};
 				if (_aicount >= TOTALAI) exitwith {
-				diag_log format ["======== AI CREATION STOPPED @ %1 AI ========",_aicount];
+				[format["======== AI CREATION STOPPED @ %1 AI ========", _aicount], 1] spawn debug_log;
 					while {true} do {
-						diag_log format ["---- fps = %1 ::: fpsmin = %2 ::: loop %3sec ::: _aicount = %4",round diag_fps,round diag_fpsmin,(BATCHTIME / 2),_aicount];
+						[format["---- fps = %1 ::: fpsmin = %2 ::: loop %3sec ::: _aicount = %4", round diag_fps,round diag_fpsmin,(BATCHTIME / 2),_aicount], 2] spawn debug_log;
 						sleep (BATCHTIME / 2);
 					};
 				};
@@ -79,16 +104,16 @@ if (isServer || !hasInterface) then
 			_i = 0;
 			_aicount = 0;
 			_timer = CREATETIME / 100;
-			diag_log "===========AI SERVER TEST SETTINGS===========";
-			if (ENABLEFPSLIMIT > 0) then {diag_log "**** FPS LIMIT ON";}else{diag_log "**** FPS LIMIT OFF";};
-			if (SPLITAI > 0) then {diag_log "**** SPLITAI ON";}else{diag_log "**** SPLITAI OFF";};
-			diag_log format ["**** HEADLESSON = %1",HEADLESSON];
-			diag_log format ["**** FPSLIMIT = %1",FPSLIMIT];
-			diag_log format ["**** TIME PER UNIT = %1",_timer];
-			diag_log format ["**** AI PER BATCH = %1",AIPERBATCH];
-			if (ENABLEFPSLIMIT > 0) then {diag_log format ["**** BATCH   TIME = %1",(BATCHTIME / 2)];}else{diag_log format ["**** BATCH   TIME = %1",BATCHTIME];};
-			diag_log format ["**** MAX TOTAL AI = %1",TOTALAI];
-			diag_log "=============================================";
+			["===========AI SERVER TEST SETTINGS===========", 1] spawn debug_log;
+			if (ENABLEFPSLIMIT > 0) then {["**** FPS LIMIT ON", 1] spawn debug_log;}else{["**** FPS LIMIT OFF", 1] spawn debug_log;};
+			if (SPLITAI > 0) then {["**** SPLITAI ON", 1] spawn debug_log;}else{["**** SPLITAI OFF", 1] spawn debug_log;};
+			[format["**** HEADLESSON = %1", HEADLESSON], 1] spawn debug_log;
+			[format["**** FPSLIMIT = %1", FPSLIMIT], 1] spawn debug_log;
+			[format["**** TIME PER UNIT = %1", _timer], 1] spawn debug_log;
+			[format["**** AI PER BATCH = %1", AIPERBATCH], 1] spawn debug_log;
+			if (ENABLEFPSLIMIT > 0) then {[format["**** BATCH   TIME = %1", (BATCHTIME / 2)], 1] spawn debug_log;}else{[format["**** BATCH   TIME = %1", BATCHTIME], 1] spawn debug_log;};
+			[format["**** MAX TOTAL AI = %1", TOTALAI], 1] spawn debug_log;
+			["=============================================", 1] spawn debug_log;
 			_grp = createGroup west;
 			while {true} do {
 				sleep _timer;
@@ -100,7 +125,7 @@ if (isServer || !hasInterface) then
 					_i = 0;
 					_grp = createGroup west;
 					sleep (BATCHTIME / 2);
-					diag_log format ["** Fps = %1 ::: FpsMin = %2 ::: time = %3 ::: _aicount = %4",round diag_fps,round diag_fpsmin,round time,_aicount];
+					[format["** Fps = %1 ::: FpsMin = %2 ::: time = %3 ::: _aicount = %4", round diag_fps,round diag_fpsmin,round time,_aicount], 2] spawn debug_log;
 					if (ENABLEFPSLIMIT > 0) then {
 							waituntil {sleep 0.5; diag_fps > FPSLIMIT};
 						} else {
@@ -108,9 +133,9 @@ if (isServer || !hasInterface) then
 						};
 				};
 				if (_aicount >= TOTALAI) exitwith {
-				diag_log format ["======== AI CREATION STOPPED @ %1 AI ========",_aicount];
+					[format["======== AI CREATION STOPPED @ %1 AI ========", _aicount], 1] spawn debug_log;
 					while {true} do {
-						diag_log format ["---- fps = %1 ::: fpsmin = %2 ::: loop %3sec ::: _aicount = %4",round diag_fps,round diag_fpsmin,(BATCHTIME / 2),_aicount];
+						[format["---- fps = %1 ::: fpsmin = %2 ::: loop %3sec ::: _aicount = %4", round diag_fps,round diag_fpsmin,(BATCHTIME / 2),_aicount], 2] spawn debug_log;
 						sleep (BATCHTIME / 2);
 					};
 				};
@@ -127,16 +152,16 @@ if (isServer || !hasInterface) then
 				_i = 0;
 				_aicount = 0;
 				_timer = CREATETIME / 100;
-				diag_log "===========AI HEADLESS TEST SETTINGS SPLIT===========";
-				if (ENABLEFPSLIMIT > 0) then {diag_log "**** FPS LIMIT ON";}else{diag_log "**** FPS LIMIT OFF";};
-				if (SPLITAI > 0) then {diag_log "**** SPLITAI ON";}else{diag_log "**** SPLITAI OFF";};
-				diag_log format ["**** HEADLESSON = %1",HEADLESSON];
-				diag_log format ["**** FPSLIMIT = %1",FPSLIMIT];
-				diag_log format ["**** TIME PER UNIT = %1",_timer];
-				diag_log format ["**** AI PER BATCH = %1",AIPERBATCH];
-				if (ENABLEFPSLIMIT > 0) then {diag_log format ["**** BATCH   TIME = %1",(BATCHTIME / 2)];}else{diag_log format ["**** BATCH   TIME = %1",BATCHTIME];};
-				diag_log format ["**** MAX TOTAL AI = %1",TOTALAI];
-				diag_log "=============================================";
+				["===========AI HEADLESS TEST SETTINGS SPLIT===========", 1] spawn debug_log;
+				if (ENABLEFPSLIMIT > 0) then {["**** FPS LIMIT ON", 1] spawn debug_log;}else{["**** FPS LIMIT OFF", 1] spawn debug_log;};
+				if (SPLITAI > 0) then {["**** SPLITAI ON", 1] spawn debug_log;}else{["**** SPLITAI OFF", 1] spawn debug_log;};
+				[format["**** HEADLESSON = %1", HEADLESSON], 1] spawn debug_log;
+				[format["**** FPSLIMIT = %1", FPSLIMIT], 1] spawn debug_log;
+				[format["**** TIME PER UNIT = %1", _timer], 1] spawn debug_log;
+				[format["**** AI PER BATCH = %1", AIPERBATCH], 1] spawn debug_log;
+				if (ENABLEFPSLIMIT > 0) then {[format["**** BATCH   TIME = %1", (BATCHTIME / 2)], 1] spawn debug_log;}else{[format["**** BATCH   TIME = %1", BATCHTIME], 1] spawn debug_log;};
+				[format["**** MAX TOTAL AI = %1", TOTALAI], 1] spawn debug_log;
+				["=============================================", 1] spawn debug_log;
 				_grp = createGroup west;
 				while {true} do {
 					sleep _timer;
@@ -148,22 +173,22 @@ if (isServer || !hasInterface) then
 						_i = 0;
 						_grp = createGroup west;
 						if (ENABLEFPSLIMIT > 0) then {sleep (BATCHTIME);}else{sleep (BATCHTIME / 2);};
-						diag_log format ["** Fps = %1 ::: FpsMin = %2 ::: time = %3 ::: _aicount = %4",round diag_fps,round diag_fpsmin,round time,_aicount];
+						[format["** Fps = %1 ::: FpsMin = %2 ::: time = %3 ::: _aicount = %4", round diag_fps,round diag_fpsmin,round time,_aicount], 2] spawn debug_log;
 						if (ENABLEFPSLIMIT > 0) then 
 							{
 								if (diag_fps < FPSLIMIT) exitwith {
-								diag_log "HEADLESS FPS LIMIT REACHED SWAPPING CREATION EXIT 1";
+								["HEADLESS FPS LIMIT REACHED SWAPPING CREATION EXIT 1", 1] spawn debug_log;
 								RUNONSERVER = true; 
 								publicVariable "RUNONSERVER";
 							};
 						}else{sleep (BATCHTIME / 2);};
 					};
-					if (RUNONSERVER) exitwith {diag_log "HEADLESS FPS LIMIT REACHED EXIT 2";};
+					if (RUNONSERVER) exitwith {["HEADLESS FPS LIMIT REACHED EXIT 2", 1] spawn debug_log;};
 					if (_aicount >= (TOTALAI / 2)) exitwith {
-					diag_log format ["======== AI CREATION STOPPED @ %1 AI ========",_aicount];
+					[format["======== AI CREATION STOPPED @ %1 AI ========", _aicount], 1] spawn debug_log;
 					RUNONSERVER = true; publicVariable "RUNONSERVER";
 						while {true} do {
-							diag_log format ["---- HCfps = %1 ::: HCfpsmin = %2 ::: loop %3sec ::: _aicount = %4",round diag_fps,round diag_fpsmin,(BATCHTIME / 2),_aicount];
+							[format["---- HCfps = %1 ::: HCfpsmin = %2 ::: loop %3sec ::: _aicount = %4", round diag_fps,round diag_fpsmin,(BATCHTIME / 2),_aicount], 2] spawn debug_log;
 							sleep (BATCHTIME / 2);
 						};
 					};
@@ -180,16 +205,16 @@ if (isServer || !hasInterface) then
 				_i = 0;
 				_aicount = 0;
 				_timer = CREATETIME / 100;
-				diag_log "===========AI SERVER TEST SETTINGS SPLIT===========";
-				if (ENABLEFPSLIMIT > 0) then {diag_log "**** FPS LIMIT ON";}else{diag_log "**** FPS LIMIT OFF";};
-				if (SPLITAI > 0) then {diag_log "**** SPLITAI ON";}else{diag_log "**** SPLITAI OFF";};
-				diag_log format ["**** HEADLESSON = %1",HEADLESSON];
-				diag_log format ["**** FPSLIMIT = %1",FPSLIMIT];
-				diag_log format ["**** TIME PER UNIT = %1",_timer];
-				diag_log format ["**** AI PER BATCH = %1",AIPERBATCH];
-				if (ENABLEFPSLIMIT > 0) then {diag_log format ["**** BATCH   TIME = %1",(BATCHTIME / 2)];}else{diag_log format ["**** BATCH   TIME = %1",BATCHTIME];};
-				diag_log format ["**** MAX TOTAL AI = %1",TOTALAI];
-				diag_log "=============================================";
+				["===========AI SERVER TEST SETTINGS SPLIT===========", 1] spawn debug_log;
+				if (ENABLEFPSLIMIT > 0) then {["**** FPS LIMIT ON", 1] spawn debug_log;}else{["**** FPS LIMIT OFF", 1] spawn debug_log;};
+				if (SPLITAI > 0) then {["**** SPLITAI ON", 1] spawn debug_log;}else{["**** SPLITAI OFF", 1] spawn debug_log;};
+				[format["**** HEADLESSON = %1", HEADLESSON], 1] spawn debug_log;
+				[format["**** FPSLIMIT = %1", FPSLIMIT], 1] spawn debug_log;
+				[format["**** TIME PER UNIT = %1", _timer], 1] spawn debug_log;
+				[format["**** AI PER BATCH = %1", AIPERBATCH], 1] spawn debug_log;
+				if (ENABLEFPSLIMIT > 0) then {[format["**** BATCH   TIME = %1", (BATCHTIME / 2)], 1] spawn debug_log;}else{[format["**** BATCH   TIME = %1", BATCHTIME], 1] spawn debug_log;};
+				[format["**** MAX TOTAL AI = %1", TOTALAI], 1] spawn debug_log;
+				["=============================================", 1] spawn debug_log;
 				_grp = createGroup west;
 				while {true} do {
 					sleep _timer;
@@ -201,22 +226,22 @@ if (isServer || !hasInterface) then
 						_i = 0;
 						_grp = createGroup west;
 						if (ENABLEFPSLIMIT > 0) then {sleep (BATCHTIME);}else{sleep (BATCHTIME / 2);};
-						diag_log format ["** Fps = %1 ::: FpsMin = %2 ::: time = %3 ::: _aicount = %4",round diag_fps,round diag_fpsmin,round time,_aicount];
+						[format["** Fps = %1 ::: FpsMin = %2 ::: time = %3 ::: _aicount = %4", round diag_fps,round diag_fpsmin,round time,_aicount], 2] spawn debug_log;
 						if (ENABLEFPSLIMIT > 0) then 
 							{
 								if (diag_fps < FPSLIMIT) exitwith {
-								diag_log "SERVER FPS LIMIT REACHED EXIT 1";
+								["SERVER FPS LIMIT REACHED EXIT 1", 1] spawn debug_log;
 								EXITSERVER = true;
 								publicVariable "EXITSERVER";
 								};
 						}else{sleep (BATCHTIME / 2);};
 					};
 					
-					if (EXITSERVER) exitwith {diag_log "SERVER FPS LIMIT REACHED EXIT 2";};
+					if (EXITSERVER) exitwith {["SERVER FPS LIMIT REACHED EXIT 2", 1] spawn debug_log;};
 					if (_aicount >= TOTALAI / 2) exitwith {
-					diag_log format ["======== AI CREATION STOPPED @ %1 AI ========",_aicount];
+					[format["======== AI CREATION STOPPED @ %1 AI ========", _aicount], 1] spawn debug_log;
 						while {true} do {
-							diag_log format ["---- SRVfps = %1 ::: SRVfpsmin = %2 ::: loop %3sec ::: _aicount = %4",round diag_fps,round diag_fpsmin,(BATCHTIME / 2),_aicount];
+							[format["---- SRVfps = %1 ::: SRVfpsmin = %2 ::: loop %3sec ::: _aicount = %4", round diag_fps,round diag_fpsmin,(BATCHTIME / 2),_aicount], 2] spawn debug_log;
 							sleep (BATCHTIME / 2);
 						};
 					};
@@ -224,5 +249,5 @@ if (isServer || !hasInterface) then
 			};
 		};
 	};
-} else {diag_log "I am not the server OR the Headless";}; 
-diag_log "END OF SCRIPT";
+} else {["I am not the server OR the Headless", 1] spawn debug_log;};
+["END OF SCRIPT", 1] spawn debug_log;

@@ -4,6 +4,14 @@ joinUnassigned = false;
 
 class Params
 {
+	class LogLevel
+	{
+		title = "LOG LEVEL TO SERVER RPT (0 = no logging, 1 = basic logging, 2 = full logging)";
+		values[] = {0,1,2,};
+		texts[] = {"0","1","2"};
+		default = 1;
+	};
+	
 	class CREATETIME
 	{
 		title = "EACH UNIT CREATE TIME";
