@@ -23,11 +23,11 @@ debug_log = {
 	if (LogLevel >= _level) then { diag_log _message; };
 };
 
-fps_avg = {
-	/*	=== SCRIPT BY FRE41
+fps_avg_loop = {
+	/*	=== SCRIPT BY FRED41
 		Average over the last 16 diag_fps results
 		Introduces and updates global variable "FPS_AVG", as averaged/smoothed replacement of diag_fps
-		Usage: [] spawn fps_avg, if needed;
+		Usage: [] spawn fps_avg_loop, if needed;
 	*/
 	private ["_fps_arr","_fps_idx","_fps_sum","_avg_num"];
 
