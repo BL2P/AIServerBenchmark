@@ -1,0 +1,22 @@
+fps_avg.fsm by Fred41
+
+This FSM allows FPS smoothing and precise approximation to a target FPS for benchmarking purposes.
+
+fps_avg.fsm samples diag_fps values each 320ms, what means each 16 frames at 50 FPS.
+Because diag_fps returns the average of the last 16 frames, allmost all frames are included in averaging, this way.
+
+Additional, this FSM calculates a delay based on the distance of current- and targetvalue and a base delay.
+This allows slowing down load simulation (unit creation), dependend of distance to target FPS value (FPSLIMIT).
+
+Usage: [number of samples, max. FPS, FPSLIMIT, BASEDELAY] execFSM "fps_avg.fsm"
+Wait: waituntil {sleep 0.1; !isNil("fps_avg")};
+GlobVars: fps_avg, delay_adapt
+Example:
+	
+	[64,50.0,45,10] execFSM "fps_avg.fsm";
+	waituntil {sleep 0.1; !isNil("fps_avg")};
+	
+	now fetch global var 'fps_avg' instead of 'diag_fps'
+	and get the delay in global var 'delay_adapt'
+	
+Happy benchmarking :)	

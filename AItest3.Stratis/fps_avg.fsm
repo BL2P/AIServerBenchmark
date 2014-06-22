@@ -1,0 +1,130 @@
+/*%FSM<COMPILE "scriptedFSM.cfg, FPS_AVG">*/
+/*%FSM<HEAD>*/
+/*
+item0[] = {"wait",2,250,-75.000000,-400.000000,25.000000,-350.000000,0.000000,"wait"};
+item1[] = {"init",0,250,-75.000000,-500.000000,25.000000,-450.000000,0.000000,"init"};
+item2[] = {"first",4,218,-200.000000,-450.000000,-100.000000,-400.000000,0.000000,"first"};
+item3[] = {"sample",4,4314,50.000000,-400.000000,150.000000,-350.000000,0.000000,"sample"};
+item4[] = {"already",4,218,-200.000000,-550.000000,-100.000000,-500.000000,0.000000,"already"};
+item5[] = {"terminate",1,250,-75.000000,-600.000000,25.000000,-550.000000,0.000000,"terminate"};
+link0[] = {0,3};
+link1[] = {1,2};
+link2[] = {1,4};
+link3[] = {2,0};
+link4[] = {3,0};
+link5[] = {4,5};
+globals[] = {25.000000,1,0,0,0,640,480,1,25,6316128,1,-226.963837,216.618301,-233.599396,-724.928223,864,957,1};
+window[] = {2,-1,-1,-32000,-32000,876,110,1132,110,3,881};
+*//*%FSM</HEAD>*/
+class FSM
+{
+  fsmName = "FPS_AVG";
+  class States
+  {
+    /*%FSM<STATE "wait">*/
+    class wait
+    {
+      name = "wait";
+      init = /*%FSM<STATEINIT""">*/""/*%FSM</STATEINIT""">*/;
+      precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+      class Links
+      {
+        /*%FSM<LINK "sample">*/
+        class sample
+        {
+          priority = 0.000000;
+          to="wait";
+          precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+          condition=/*%FSM<CONDITION""">*/"(diag_tickTime >= _NextFPS)"/*%FSM</CONDITION""">*/;
+          action=/*%FSM<ACTION""">*/"_NextFPS = diag_TickTime + _INTERVAL_FPS;" \n
+           "" \n
+           "// fps averaging" \n
+           "_fps_old = _fps_arr select _fps_idx;" \n
+           "_fps_cur = diag_fps;" \n
+           "_fps_arr set [_fps_idx, _fps_cur];" \n
+           "_fps_idx = (_fps_idx + 1) % _avg_num;" \n
+           "_fps_sum = _fps_sum - _fps_old + _fps_cur;" \n
+           "fps_avg = _fps_sum / _avg_num;" \n
+           "" \n
+           "// adaptive delay calculation" \n
+           "delay_adapt = (((abs(_fps_max - fps_avg)) /_fps_mgn) ^2) *_delay_base ;" \n
+           "" \n
+           ""/*%FSM</ACTION""">*/;
+        };
+        /*%FSM</LINK>*/
+      };
+    };
+    /*%FSM</STATE>*/
+    /*%FSM<STATE "init">*/
+    class init
+    {
+      name = "init";
+      init = /*%FSM<STATEINIT""">*/"diag_log (""fps_avg.fsm started"");" \n
+       "" \n
+       "// init local variables" \n
+       "_avg_num = _this select 0;" \n
+       "_fps_max = _this select 1;" \n
+       "_fps_lim = _this select 2;" \n
+       "_delay_base = _this select 3;" \n
+       "" \n
+       "" \n
+       "// init variables for floating fps average" \n
+       "_fps_mgn = _fps_max -_fps_lim;" \n
+       "_fps_arr = [];" \n
+       "_fps_arr resize _avg_num;" \n
+       "{ _fps_arr set [_forEachIndex, _fps_max] } foreach _fps_arr;" \n
+       "_fps_sum = _avg_num * _fps_max;" \n
+       "_fps_idx = 0;" \n
+       "" \n
+       "// global variables exported for use in mission" \n
+       "delay_adapt = _delay_base;" \n
+       "fps_avg = _fps_max;" \n
+       "" \n
+       "// timing" \n
+       "_NextFPS = diag_tickTime;" \n
+       "_INTERVAL_FPS = 0.32; //320ms -> max. 16 frames"/*%FSM</STATEINIT""">*/;
+      precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+      class Links
+      {
+        /*%FSM<LINK "already">*/
+        class already
+        {
+          priority = 0.000000;
+          to="terminate";
+          precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+          condition=/*%FSM<CONDITION""">*/"(!isnil (""FPS_AVG_ACT""))"/*%FSM</CONDITION""">*/;
+          action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+        };
+        /*%FSM</LINK>*/
+        /*%FSM<LINK "first">*/
+        class first
+        {
+          priority = 0.000000;
+          to="wait";
+          precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+          condition=/*%FSM<CONDITION""">*/"(isnil (""FPS_AVG_ACT""))"/*%FSM</CONDITION""">*/;
+          action=/*%FSM<ACTION""">*/"FPS_AVG_ACT = true;"/*%FSM</ACTION""">*/;
+        };
+        /*%FSM</LINK>*/
+      };
+    };
+    /*%FSM</STATE>*/
+    /*%FSM<STATE "terminate">*/
+    class terminate
+    {
+      name = "terminate";
+      init = /*%FSM<STATEINIT""">*/"diag_log (""fps_avg.fsm already running"");"/*%FSM</STATEINIT""">*/;
+      precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+      class Links
+      {
+      };
+    };
+    /*%FSM</STATE>*/
+  };
+  initState="init";
+  finalStates[] =
+  {
+    "terminate"
+  };
+};
+/*%FSM</COMPILE>*/
