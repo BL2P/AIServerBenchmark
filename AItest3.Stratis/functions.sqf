@@ -7,6 +7,7 @@ debug_log = {
 			LogLevel = 2; publicVariable "LogLevel";
 			[format["Testing %1", "level 1"], 1] spawn debug_log;
 	*/
+
 	private ["_message", "_level"];
 	_message = "";
 	_level = 0;

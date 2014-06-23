@@ -1,7 +1,10 @@
 enableSaving = [false, false];
-onLoadName = "AI SERVER TEST";
+onLoadName = "AI SERVER BENCHMARK";
+author = "BL1P, Fluit, Fred41";
 joinUnassigned = false;
-
+// overviewPicture
+	loadScreen = "Image01.jpg";
+	overviewPicture = "Image01.jpg";
 class Params
 {
 	class LogLevel
@@ -38,10 +41,10 @@ class Params
 	
 	class BATCHTIME
 	{
-		title = "BATCH WAIT TIME (half if FPS Limit is on)";
-		values[] = {15,30,60,90,120,150,180,210,240,270,300};
-		texts[] = {"15s","30s","1m","1m30s","2m","2m30s","3m","3m30s","4m","4m30s","5m"};
-		default = 15;
+		title = "BATCH WAIT TIME";
+		values[] = {1,2,5,10,15,30,60,90,120,150,180,210,240,270,300};
+		texts[] = {"1s","2s","5s","10s","15s","30s","1m","1m30s","2m","2m30s","3m","3m30s","4m","4m30s","5m"};
+		default = 5;
 	};
 	
 	class AIPERBATCH
